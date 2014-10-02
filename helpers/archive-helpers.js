@@ -26,12 +26,30 @@ exports.initialize = function(pathsObj){
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function(){
+  return fs.readFile(this.paths.list, 'utf8', function(data) {
+
+  });
 };
 
-exports.isUrlInList = function(){
+exports.isUrlInList = function(request, callback){
+  // read entire list (sites.txt)
+  // if list contains request.url, return true
+  fs.readFile(this.paths.list, 'utf8', function(err, data) {
+    if (data.indexOf(request.url)) {
+      // console.log(data);
+      // console.log('in if, requrl ', request.url);
+      callback();
+    }
+  });
+
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(request, callback){
+  console.log(request._postData.url);
+  fs.appendFile(exports.paths.list, request._postData.url +'\n', function() {
+    console.log('its saved!');
+    callback();
+  })
 };
 
 exports.isURLArchived = function(){
