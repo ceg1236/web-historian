@@ -8,18 +8,20 @@ exports.handleRequest = function (request, response) {
 
   var actions = {
       'GET': function(request, response){
-        if (request.url === '/') {
-          fs.readFile(archive.paths.siteAssets + '/index.html', 'utf8', function(err, data) {
-            helpers.sendResponse(response, data);
-          });
-        } else {
-          fs.readFile(archive.paths.list + request.url, 'utf8', function(err, data) {
-            archive.isUrlInList(request.url, function() {
-
-              helpers.sendResponse(response, request.url);
+        archive.isUrlInList(request, response, function() {
+          if (request.url === '/') {
+            fs.readFile(archive.paths.siteAssets + '/index.html', 'utf8', function(err, data) {
+              helpers.sendResponse(response, data);
             });
-          })
-        }
+          } else {
+            fs.readFile(archive.paths.list + request.url, 'utf8', function(err, data) {
+              archive.isUrlInList(request.url, function() {
+
+                helpers.sendResponse(response, request.url);
+              });
+            })
+          }
+        })
       },
 
       'POST': function(request, response){

@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
-
+var helpers = require('../web/http-helpers.js');
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
  * Consider using the `paths` object below to store frequently used file paths. This way,
@@ -25,27 +25,26 @@ exports.initialize = function(pathsObj){
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(){
+exports.readListOfUrls = function(){ //DOES NOT WORK YET
   return fs.readFile(this.paths.list, 'utf8', function(data) {
-
+    return data;
   });
 };
 
-exports.isUrlInList = function(request, callback){
+exports.isUrlInList = function(request, response, callback){ //DOES NOT WORK YET
   // read entire list (sites.txt)
   // if list contains request.url, return true
   fs.readFile(this.paths.list, 'utf8', function(err, data) {
-    if (data.indexOf(request.url)) {
-      // console.log(data);
-      // console.log('in if, requrl ', request.url);
+    if (err || data.indexOf(request.url) < 0) {
+      helpers.sendResponse(response, null, 404);
+    } else {
       callback();
     }
   });
-
 };
 
-exports.addUrlToList = function(request, callback){
-  console.log(request._postData.url);
+exports.addUrlToList = function(request, callback){ //REWRITES ENTIRE FILE EACH TIME, NEED TO FIX
+  exports.isUrlInList();
   fs.appendFile(exports.paths.list, request._postData.url +'\n', function() {
     console.log('its saved!');
     callback();
